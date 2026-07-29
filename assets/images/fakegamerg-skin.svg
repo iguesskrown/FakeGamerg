@@ -1,0 +1,37 @@
+<svg width="256" height="256" viewBox="0 0 256 256" xmlns="http://www.w3.org/2000/svg">
+  <rect width="256" height="256" fill="#6ec5ff"/>
+  <rect x="0" y="0" width="256" height="256" fill="#1f2d3d" opacity="0.18"/>
+
+  <rect x="64" y="0" width="128" height="64" fill="#f8cf9f"/>
+  <rect x="64" y="64" width="128" height="64" fill="#f8cf9f"/>
+  <rect x="64" y="128" width="128" height="64" fill="#7b5cff"/>
+  <rect x="64" y="192" width="128" height="64" fill="#2a7fff"/>
+
+  <rect x="64" y="0" width="16" height="16" fill="#3a2b1f"/>
+  <rect x="176" y="0" width="16" height="16" fill="#3a2b1f"/>
+  <rect x="80" y="16" width="16" height="16" fill="#3a2b1f"/>
+  <rect x="160" y="16" width="16" height="16" fill="#3a2b1f"/>
+
+  <rect x="80" y="32" width="96" height="16" fill="#2a2218" opacity="0.8"/>
+  <rect x="80" y="48" width="96" height="16" fill="#2a2218" opacity="0.8"/>
+
+  <circle cx="96" cy="24" r="6" fill="#2a2218"/>
+  <circle cx="160" cy="24" r="6" fill="#2a2218"/>
+  <rect x="96" y="38" width="32" height="8" rx="4" fill="#2a2218"/>
+  <rect x="128" y="38" width="32" height="8" rx="4" fill="#2a2218"/>
+
+  <rect x="48" y="64" width="32" height="64" fill="#f8cf9f"/>
+  <rect x="176" y="64" width="32" height="64" fill="#f8cf9f"/>
+
+  <rect x="80" y="80" width="96" height="48" fill="#2f7dff"/>
+  <rect x="96" y="96" width="32" height="16" fill="#f8cf9f"/>
+  <rect x="128" y="96" width="32" height="16" fill="#f8cf9f"/>
+
+  <rect x="48" y="128" width="32" height="64" fill="#2f7dff"/>
+  <rect x="176" y="128" width="32" height="64" fill="#2f7dff"/>
+
+  <rect x="80" y="176" width="32" height="48" fill="#2f7dff"/>
+  <rect x="144" y="176" width="32" height="48" fill="#2f7dff"/>
+
+  <text x="128" y="236" text-anchor="middle" font-family="Arial, sans-serif" font-size="20" font-weight="700" fill="#ffffff">FG</text>
+</svg>

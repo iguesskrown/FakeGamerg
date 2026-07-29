@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!-- Yellow background top -->
+  <rect width="512" height="128" fill="#FFD700"/>
+  
+  <!-- Black bar -->
+  <rect x="64" y="32" width="384" height="64" fill="#000000"/>
+  
+  <!-- Black middle section -->
+  <rect width="512" height="256" y="128" fill="#000000"/>
+  
+  <!-- White left side -->
+  <rect x="64" y="320" width="128" height="128" fill="#FFFFFF"/>
+  
+  <!-- Red left inner -->
+  <rect x="128" y="320" width="64" height="128" fill="#FF0000"/>
+  <rect x="128" y="400" width="64" height="48" fill="#990000"/>
+  
+  <!-- Cream center -->
+  <rect x="256" y="256" width="128" height="192" fill="#F5E6D3"/>
+  
+  <!-- Red right inner -->
+  <rect x="320" y="320" width="64" height="128" fill="#FF0000"/>
+  <rect x="320" y="400" width="64" height="48" fill="#990000"/>
+  
+  <!-- White right side -->
+  <rect x="320" y="320" width="128" height="128" fill="#FFFFFF"/>
+  
+  <!-- Light beige bottom -->
+  <rect y="448" width="512" height="64" fill="#F5E6D3"/>
+</svg>
