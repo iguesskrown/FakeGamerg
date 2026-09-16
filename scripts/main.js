@@ -1,99 +1,126 @@
-// Smooth scroll for nav links
 document.addEventListener('DOMContentLoaded', () => {
-  document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-    anchor.addEventListener('click', function (e) {
-      const target = document.querySelector(this.getAttribute('href'));
-      if (target) {
-        e.preventDefault();
-        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }
+  const menuButton = document.querySelector('.menu-toggle');
+  const navMenu = document.querySelector('.nav-menu');
+
+  menuButton?.addEventListener('click', () => {
+    const isOpen = menuButton.getAttribute('aria-expanded') === 'true';
+    menuButton.setAttribute('aria-expanded', String(!isOpen));
+    navMenu.classList.toggle('open', !isOpen);
+  });
+
+  document.querySelectorAll('.nav-menu a').forEach((link) => {
+    link.addEventListener('click', () => {
+      menuButton?.setAttribute('aria-expanded', 'false');
+      navMenu?.classList.remove('open');
     });
   });
 
-  // IntersectionObserver for reveal
   const reveals = document.querySelectorAll('.reveal');
-  const obs = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
       if (entry.isIntersecting) {
-        entry.target.classList.add('reveal--visible');
+        entry.target.classList.add('visible');
+        observer.unobserve(entry.target);
       }
     });
   }, { threshold: 0.12 });
-  reveals.forEach(r => obs.observe(r));
+  reveals.forEach((element) => observer.observe(element));
 
-  // Card tilt effect
-  const cards = document.querySelectorAll('.card');
-  cards.forEach(card => {
-    card.addEventListener('mousemove', (e) => {
-      const rect = card.getBoundingClientRect();
-      const x = (e.clientX - rect.left) / rect.width; // 0..1
-      const y = (e.clientY - rect.top) / rect.height; // 0..1
-      const rotateX = (y - 0.5) * 6; // tilt range
-      const rotateY = (x - 0.5) * -6;
-      card.style.transform = `perspective(800px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.01)`;
-    });
-    card.addEventListener('mouseleave', () => {
-      card.style.transform = '';
+  const filters = document.querySelectorAll('.filter');
+  const projects = [...document.querySelectorAll('.project')];
+  filters.forEach((filter) => {
+    filter.addEventListener('click', () => {
+      const category = filter.dataset.filter;
+      filters.forEach((button) => button.classList.toggle('active', button === filter));
+      projects.forEach((project) => {
+        project.classList.toggle('is-hidden', category !== 'all' && project.dataset.category !== category);
+      });
     });
   });
 
-  document.querySelectorAll('.like-btn').forEach(button => {
-    button.addEventListener('click', () => {
-      button.classList.toggle('liked');
+  const dialog = document.querySelector('#lightbox');
+  const preview = document.querySelector('#lightbox-image');
+  const caption = document.querySelector('#lightbox-title');
+  const close = document.querySelector('.lightbox-close');
+  const previous = document.querySelector('.lightbox-arrow.previous');
+  const next = document.querySelector('.lightbox-arrow.next');
+  let currentProject = 0;
+  const visibleProjects = () => projects.filter((project) => !project.classList.contains('is-hidden'));
+
+  const showProject = (index) => {
+    const current = visibleProjects();
+    currentProject = (index + current.length) % current.length;
+    const project = current[currentProject];
+    preview.src = project.dataset.image;
+    preview.alt = project.querySelector('img').alt;
+    caption.textContent = project.dataset.title;
+  };
+
+  projects.forEach((project) => {
+    project.addEventListener('click', () => {
+      currentProject = visibleProjects().indexOf(project);
+      showProject(currentProject);
+      dialog.showModal();
     });
   });
-});
+  close?.addEventListener('click', () => dialog.close());
+  previous?.addEventListener('click', () => showProject(currentProject - 1));
+  next?.addEventListener('click', () => showProject(currentProject + 1));
+  dialog?.addEventListener('click', (event) => {
+    if (event.target === dialog) dialog.close();
+  });
+  document.addEventListener('keydown', (event) => {
+    if (!dialog?.open) return;
+    if (event.key === 'ArrowLeft') showProject(currentProject - 1);
+    if (event.key === 'ArrowRight') showProject(currentProject + 1);
+  });
 
-// Lightbox functionality (outside of DOMContentLoaded so elements exist)
-document.addEventListener('DOMContentLoaded', () => {
-  const images = Array.from(document.querySelectorAll('.thumb-img'));
-  const lightbox = document.getElementById('lightbox');
-  const lightboxImg = document.getElementById('lightbox-img');
-  const caption = lightbox.querySelector('.lightbox-caption');
-  const btnClose = lightbox.querySelector('.lightbox-close');
-  const btnPrev = lightbox.querySelector('.lightbox-prev');
-  const btnNext = lightbox.querySelector('.lightbox-next');
-  let current = 0;
+  document.querySelector('#year').textContent = new Date().getFullYear();
 
-  function show(index) {
-    current = (index + images.length) % images.length;
-    const src = images[current].getAttribute('src');
-    const alt = images[current].getAttribute('alt') || '';
-    lightboxImg.src = src;
-    caption.textContent = alt;
-    lightbox.setAttribute('aria-hidden', 'false');
-    document.body.style.overflow = 'hidden';
-    images[current].focus?.();
+  const portrait = document.querySelector('.about-portrait');
+  if (portrait) {
+    const canvas = document.createElement('canvas');
+    canvas.className = 'skin-viewer';
+    canvas.setAttribute('aria-label', 'Interactive 3D Minecraft model of Krown. Drag to rotate and use the mouse wheel to zoom.');
+    portrait.append(canvas);
+
+    const viewerScript = document.createElement('script');
+    viewerScript.src = 'https://unpkg.com/skinview3d@3.4.2/bundles/skinview3d.bundle.js';
+    viewerScript.onload = () => {
+      try {
+        const size = Math.min(portrait.clientWidth, 380);
+        const viewer = new window.skinview3d.SkinViewer({ canvas, width: size, height: size });
+        viewer.fov = 45;
+        viewer.zoom = 0.83;
+        viewer.autoRotate = true;
+        viewer.autoRotateSpeed = 0.75;
+        viewer.controls.enableRotate = true;
+        viewer.controls.enableZoom = true;
+        viewer.controls.enablePan = false;
+        viewer.globalLight.intensity = 2.6;
+        viewer.cameraLight.intensity = 0.9;
+        viewer.animation = new window.skinview3d.IdleAnimation();
+
+        viewer.loadSkin('assets/images/krown-skin.webp').then(() => {
+          portrait.classList.add('viewer-ready');
+          new ResizeObserver(() => {
+            const nextSize = Math.min(portrait.clientWidth, 380);
+            viewer.width = nextSize;
+            viewer.height = nextSize;
+          }).observe(portrait);
+        }).catch(() => {
+          canvas.remove();
+          portrait.classList.add('viewer-unavailable');
+        });
+      } catch {
+        canvas.remove();
+        portrait.classList.add('viewer-unavailable');
+      }
+    };
+    viewerScript.onerror = () => {
+      canvas.remove();
+      portrait.classList.add('viewer-unavailable');
+    };
+    document.head.append(viewerScript);
   }
-
-  function hide() {
-    lightbox.setAttribute('aria-hidden', 'true');
-    document.body.style.overflow = '';
-    lightboxImg.src = '';
-  }
-
-  images.forEach((img, i) => {
-    img.style.cursor = 'zoom-in';
-    img.addEventListener('click', (e) => {
-      show(i);
-    });
-  });
-
-  btnClose.addEventListener('click', hide);
-  btnPrev.addEventListener('click', () => show(current - 1));
-  btnNext.addEventListener('click', () => show(current + 1));
-
-  // close when clicking outside content
-  lightbox.addEventListener('click', (e) => {
-    if (e.target === lightbox || e.target.hasAttribute('data-close')) hide();
-  });
-
-  // keyboard controls
-  document.addEventListener('keydown', (e) => {
-    if (lightbox.getAttribute('aria-hidden') === 'false') {
-      if (e.key === 'Escape') hide();
-      if (e.key === 'ArrowLeft') show(current - 1);
-      if (e.key === 'ArrowRight') show(current + 1);
-    }
-  });
 });
