@@ -116,10 +116,7 @@ document.addEventListener('DOMContentLoaded', () => {
         image.alt = 'Minecraft thumbnail uploaded by FakeGamerG';
         const shade = document.createElement('span');
         shade.className = 'project-shade';
-        const number = document.createElement('span');
-        number.className = 'project-number';
-        number.textContent = `U${String(index + 1).padStart(2, '0')}`;
-        project.append(image, shade, number);
+        project.append(image, shade);
 
         const activeCategory = document.querySelector('.filter.active')?.dataset.filter ?? 'all';
         project.classList.toggle('is-hidden', activeCategory !== 'all' && activeCategory !== 'story');
