@@ -120,8 +120,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const activeCategory = document.querySelector('.filter.active')?.dataset.filter ?? 'all';
         project.classList.toggle('is-hidden', activeCategory !== 'all' && activeCategory !== 'story');
-        gallery.prepend(project);
-        projects.unshift(project);
+        gallery.append(project);
+        projects.push(project);
         registerProject(project);
       }
 
