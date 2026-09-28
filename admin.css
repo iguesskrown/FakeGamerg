@@ -1,0 +1,25 @@
+.admin-page{min-height:100vh;background:radial-gradient(circle at 82% 16%,rgba(198,255,63,.1),transparent 24rem),var(--ink)}
+.admin-page [hidden]{display:none!important}
+.admin-shell{width:min(100% - 40px,680px);min-height:100vh;margin-inline:auto;padding:2rem 0 4rem}
+.admin-brand{margin-bottom:3rem}
+.admin-panel{padding:clamp(1.5rem,6vw,3.5rem);border:1px solid var(--line);background:rgba(17,21,34,.88)}
+.admin-panel h1{margin-bottom:1rem;font-size:clamp(3rem,10vw,5rem)}
+.admin-description{max-width:420px;margin-bottom:2rem;color:#b7bac4}
+.admin-form{display:grid;gap:.65rem}
+.admin-form label{margin-top:.5rem;color:#e2e4e9;font-size:.8rem;font-weight:700}
+.admin-form input[type=email],.admin-form input[type=password],.admin-form input[type=file]{width:100%;min-height:46px;padding:.75rem;border:1px solid rgba(255,255,255,.24);border-radius:0;color:var(--paper);background:#080b15;font:500 .9rem var(--body)}
+.admin-form input:focus-visible,.admin-form button:focus-visible,.admin-sign-out:focus-visible,.admin-back:focus-visible{outline:2px solid var(--lime);outline-offset:3px}
+.admin-submit{width:100%;margin-top:.9rem}
+.admin-submit:disabled{cursor:wait;opacity:.65}
+.admin-status{min-height:1.5em;margin:1rem 0;color:#bbc0c8;font-size:.82rem}
+.admin-status.is-error{color:#ff8a70}
+.admin-back{display:inline-block;margin-top:.6rem;color:var(--lime);font-size:.8rem;font-weight:700}
+.admin-session{display:flex;align-items:center;justify-content:space-between;gap:1rem;margin:1.8rem 0 1rem;color:#b7bac4;font-size:.8rem}
+.admin-sign-out{padding:.45rem .7rem;border:1px solid var(--line);color:var(--paper);background:transparent;font-size:.75rem;font-weight:700}
+.admin-sign-out:hover{border-color:var(--lime);color:var(--lime)}
+.admin-preview{position:relative;overflow:hidden;aspect-ratio:16/9;margin-bottom:1rem;background:#080b15}
+.admin-preview img{display:block;width:100%;height:100%;object-fit:cover}
+.admin-preview span{position:absolute;right:.65rem;bottom:.65rem;padding:.35rem .5rem;color:var(--ink);background:var(--lime);font-size:.58rem;font-weight:700;letter-spacing:.1em}
+.upload-label{margin-top:.8rem!important}
+.upload-hint{margin:0;color:#a1a6ae;font-size:.72rem}
+@media(max-width:500px){.admin-shell{width:min(100% - 28px,680px);padding-top:1.4rem}.admin-brand{margin-bottom:2rem}.admin-panel{padding:1.35rem}}

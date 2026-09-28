@@ -28,6 +28,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const filters = document.querySelectorAll('.filter');
   const projects = [...document.querySelectorAll('.project')];
+  const gallery = document.querySelector('.gallery');
+  const allWorkCount = document.querySelector('.filter[data-filter="all"] span');
   filters.forEach((filter) => {
     filter.addEventListener('click', () => {
       const category = filter.dataset.filter;
@@ -56,13 +58,14 @@ document.addEventListener('DOMContentLoaded', () => {
     caption.textContent = project.dataset.title;
   };
 
-  projects.forEach((project) => {
+  const registerProject = (project) => {
     project.addEventListener('click', () => {
       currentProject = visibleProjects().indexOf(project);
       showProject(currentProject);
       dialog.showModal();
     });
-  });
+  };
+  projects.forEach(registerProject);
   close?.addEventListener('click', () => dialog.close());
   previous?.addEventListener('click', () => showProject(currentProject - 1));
   next?.addEventListener('click', () => showProject(currentProject + 1));
@@ -76,6 +79,80 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   document.querySelector('#year').textContent = new Date().getFullYear();
+
+  const config = window.SUPABASE_CONFIG;
+  if (config?.url && config?.anonKey && window.supabase) {
+    const client = window.supabase.createClient(config.url, config.anonKey);
+    const featuredImage = document.querySelector('.hero-image-wrap img');
+    const applyFeaturedThumbnail = (url) => {
+      if (!url || !featuredImage) return;
+      featuredImage.src = url;
+    };
+    const loadUploadedThumbnails = async () => {
+      const { data: uploads, error } = await client.storage
+        .from('site-thumbnails')
+        .list('thumbnails', { limit: 100, sortBy: { column: 'created_at', order: 'desc' } });
+      if (error || !uploads || !gallery) return;
+
+      const allowedExtensions = ['jpg', 'jpeg', 'png', 'webp', 'gif'];
+      for (let index = uploads.length - 1; index >= 0; index -= 1) {
+        const upload = uploads[index];
+        const extension = upload.name.split('.').pop().toLowerCase();
+        if (!allowedExtensions.includes(extension)) continue;
+
+        const path = `thumbnails/${upload.name}`;
+        const { data } = client.storage.from('site-thumbnails').getPublicUrl(path);
+        if (projects.some((project) => project.dataset.image === data.publicUrl)) continue;
+
+        const project = document.createElement('button');
+        project.type = 'button';
+        project.className = 'project reveal visible';
+        project.dataset.category = 'story';
+        project.dataset.title = `Thumbnail upload ${String(index + 1).padStart(2, '0')}`;
+        project.dataset.image = data.publicUrl;
+
+        const image = document.createElement('img');
+        image.src = data.publicUrl;
+        image.alt = 'Minecraft thumbnail uploaded by FakeGamerG';
+        const shade = document.createElement('span');
+        shade.className = 'project-shade';
+        const number = document.createElement('span');
+        number.className = 'project-number';
+        number.textContent = `U${String(index + 1).padStart(2, '0')}`;
+        project.append(image, shade, number);
+
+        const activeCategory = document.querySelector('.filter.active')?.dataset.filter ?? 'all';
+        project.classList.toggle('is-hidden', activeCategory !== 'all' && activeCategory !== 'story');
+        gallery.prepend(project);
+        projects.unshift(project);
+        registerProject(project);
+      }
+
+      if (allWorkCount) allWorkCount.textContent = String(projects.length);
+    };
+
+    void loadUploadedThumbnails();
+
+    client
+      .from('site_settings')
+      .select('featured_thumbnail')
+      .eq('id', 'featured')
+      .maybeSingle()
+      .then(({ data }) => applyFeaturedThumbnail(data?.featured_thumbnail));
+
+    client
+      .channel('featured-thumbnail')
+      .on('postgres_changes', {
+        event: 'UPDATE',
+        schema: 'public',
+        table: 'site_settings',
+        filter: 'id=eq.featured',
+      }, ({ new: settings }) => {
+        applyFeaturedThumbnail(settings.featured_thumbnail);
+        void loadUploadedThumbnails();
+      })
+      .subscribe();
+  }
 
   const portrait = document.querySelector('.about-portrait');
   if (portrait) {

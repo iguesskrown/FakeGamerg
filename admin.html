@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#080b15" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>Thumbnail studio | FakeGamerG</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="admin.css" />
+  </head>
+  <body class="admin-page">
+    <main class="admin-shell">
+      <a class="brand admin-brand" href="index.html"><img src="assets/images/logo.jfif" alt="" width="42" height="42" /><span>FAKE<span>GAMER</span>G</span></a>
+      <section class="admin-panel" aria-labelledby="admin-title">
+        <p class="kicker"><span></span> Creator studio</p>
+        <h1 id="admin-title">Featured<br /><em>thumbnail.</em></h1>
+        <p class="admin-description">Sign in to publish a new featured thumbnail across the website.</p>
+        <form id="admin-login" class="admin-form">
+          <label for="admin-email">Email</label>
+          <input id="admin-email" name="email" type="email" autocomplete="username" required />
+          <label for="admin-password">Password</label>
+          <input id="admin-password" name="password" type="password" autocomplete="current-password" required />
+          <button class="button button-primary admin-submit" type="submit">Sign in <span aria-hidden="true">→</span></button>
+        </form>
+        <section id="thumbnail-uploader" class="thumbnail-uploader" hidden>
+          <div class="admin-session"><span id="admin-identity"></span><button id="admin-sign-out" class="admin-sign-out" type="button">Sign out</button></div>
+          <div class="admin-preview"><img id="admin-preview-image" src="assets/images/thumbnail-01.webp" alt="Current featured thumbnail" /><span>LIVE ON THE WEBSITE</span></div>
+          <form id="thumbnail-form" class="admin-form">
+            <label class="upload-label" for="thumbnail-file">Choose a thumbnail</label>
+            <input id="thumbnail-file" name="thumbnail" type="file" accept="image/jpeg,image/png,image/webp,image/gif" required />
+            <p class="upload-hint">JPG, PNG, WebP or GIF. Maximum 15 MB.</p>
+            <button class="button button-primary admin-submit" type="submit">Publish thumbnail <span aria-hidden="true">↗</span></button>
+          </form>
+        </section>
+        <p id="admin-status" class="admin-status" role="status" aria-live="polite">Sign in with the FakeGamerG creator account.</p>
+        <a class="admin-back" href="index.html">← Back to the portfolio</a>
+      </section>
+    </main>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="scripts/supabase-config.js"></script>
+    <script src="scripts/admin.js" defer></script>
+  </body>
+</html>
