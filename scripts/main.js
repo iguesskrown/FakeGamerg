@@ -30,6 +30,21 @@ document.addEventListener('DOMContentLoaded', () => {
   const projects = [...document.querySelectorAll('.project')];
   const gallery = document.querySelector('.gallery');
   const allWorkCount = document.querySelector('.filter[data-filter="all"] span');
+  const viewMoreButton = document.querySelector('#view-more-projects');
+  const galleryPageSize = 18;
+  let visibleProjectLimit = galleryPageSize;
+  const updateGalleryPagination = () => {
+    projects.forEach((project, index) => {
+      project.classList.toggle('is-pagination-hidden', index >= visibleProjectLimit);
+    });
+    if (viewMoreButton) viewMoreButton.hidden = projects.length <= visibleProjectLimit;
+  };
+
+  viewMoreButton?.addEventListener('click', () => {
+    visibleProjectLimit += galleryPageSize;
+    updateGalleryPagination();
+  });
+
   filters.forEach((filter) => {
     filter.addEventListener('click', () => {
       const category = filter.dataset.filter;
@@ -66,6 +81,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   };
   projects.forEach(registerProject);
+  updateGalleryPagination();
   close?.addEventListener('click', () => dialog.close());
   previous?.addEventListener('click', () => showProject(currentProject - 1));
   next?.addEventListener('click', () => showProject(currentProject + 1));
@@ -95,6 +111,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (error || !uploads || !gallery) return;
 
       const allowedExtensions = ['jpg', 'jpeg', 'png', 'webp', 'gif'];
+      let hasNewUploads = false;
       for (let index = uploads.length - 1; index >= 0; index -= 1) {
         const upload = uploads[index];
         const extension = upload.name.split('.').pop().toLowerCase();
@@ -120,12 +137,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const activeCategory = document.querySelector('.filter.active')?.dataset.filter ?? 'all';
         project.classList.toggle('is-hidden', activeCategory !== 'all' && activeCategory !== 'story');
-        gallery.append(project);
-        projects.push(project);
+        gallery.prepend(project);
+        projects.unshift(project);
         registerProject(project);
+        hasNewUploads = true;
       }
 
+      if (hasNewUploads) gallery.classList.add('has-uploads');
       if (allWorkCount) allWorkCount.textContent = String(projects.length);
+      updateGalleryPagination();
     };
 
     void loadUploadedThumbnails();
